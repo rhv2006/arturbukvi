@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(102721007, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true,
+        webvisor:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/102721007" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artur Bukvi Magic Chest</title>
+
+  <script src="./aframe.min.js"></script>
+  <script src="./mindar-image-aframe.prod.js"></script>
+  <script src="./lottie.min.js"></script>
+
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    body{margin:0;overflow:hidden;background:#000;font-family:Arial,Helvetica,sans-serif}
+
+    /* overlay while scanning */
+    #scan-overlay{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:40;transition:opacity .5s}
+    #scan-overlay.hide{opacity:0}
+    #scan-text{color:#fff;font-size:18px;margin-top:24px;text-align:center;text-shadow:0 0 6px #000}
+
+    .star{position:absolute;width:64px;height:64px;filter:invert(1) brightness(2)}
+
+    /* buttons */
+    .ui-bar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:flex;gap:20px;z-index:50}
+    .ui-btn{padding:8px 20px;border-radius:24px;font-size:14px;text-decoration:none;box-shadow:0 2px 6px rgba(0,0,0,.3);border:2px solid #000;background:#fff;color:#000;white-space:nowrap;transition:box-shadow .2s}
+    .ui-btn:hover{box-shadow:0 4px 10px rgba(0,0,0,.4)}
+  </style>
+</head>
+<body>
+  <div id="scan-overlay">
+    <div id="scan-text">Наведите камеру на ку&nbsp;ар — сундук откроется!</div>
+  </div>
+
+  <a-scene mindar-image="imageTargetSrc: ./targets.mind" vr-mode-ui="enabled:false" color-space="sRGB" renderer="colorManagement:true" device-orientation-permission-ui="enabled:false">
+    <a-assets>
+      <video id="clip" preload="auto" autoplay muted loop playsinline webkit-playsinline src="./clip_lq.mp4" crossorigin="anonymous"></video>
+    </a-assets>
+
+    <a-camera look-controls="enabled:false"></a-camera>
+
+    <a-entity mindar-image-target="targetIndex:0">
+      <a-video src="#clip" width="2.048" height="3.072" muted></a-video>
+    </a-entity>
+
+    <script>
+      const video = document.querySelector('#clip');
+      const target = document.querySelector('[mindar-image-target]');
+      const overlay = document.getElementById('scan-overlay');
+
+      target.addEventListener('targetFound', () => {
+        overlay.classList.add('hide');
+        if (video.paused) video.play().catch(()=>{});
+      });
+      target.addEventListener('targetLost', () => overlay.classList.remove('hide'));
+
+      // random stars generation
+      const starPath = './xmas-star.json';
+      const overlayEl = document.getElementById('scan-overlay');
+      const createStar = (x, y, size) => {
+        const div = document.createElement('div');
+        div.className = 'star';
+        div.style.left = x + 'px';
+        div.style.top = y + 'px';
+        div.style.width = div.style.height = size + 'px';
+        overlayEl.appendChild(div);
+        // Используем локальную библиотеку lottie
+        lottie.loadAnimation({container:div, renderer:'svg', loop:true, autoplay:true, path:starPath});
+      };
+      const {innerWidth:W, innerHeight:H} = window;
+      
+      // 6 stars top
+      for(let i=0;i<6;i++){
+        const x = Math.random()*W*0.8 + W*0.1;
+        const y = Math.random()*H*0.35;
+        const s = 40 + Math.random()*40;
+        createStar(x,y,s);
+      }
+      // 4 stars bottom
+      for(let i=0;i<4;i++){
+        const x = Math.random()*W*0.8 + W*0.1;
+        const y = H*0.65 + Math.random()*H*0.3;
+        const s = 40 + Math.random()*40;
+        createStar(x,y,s);
+      }
+    </script>
+  </a-scene>
+
+  <div class="ui-bar">
+    <a class="ui-btn" href="./works/">Работы</a>
+    <a class="ui-btn" href="https://t.me/Arthurbukvi" target="_blank" rel="noopener noreferrer">Тг‑канал</a>
+  </div>
+</body>
+</html>

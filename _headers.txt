@@ -1,0 +1,4 @@
+/targets.mind
+  Content-Type: application/octet-stream
+/art.webp
+  Content-Type: image/webp
